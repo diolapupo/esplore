@@ -52,9 +52,14 @@ void loop() {
   // put your main code here, to run repeatedly:
   while(Serial.available() == 0){};
   delayTime = Serial.parseInt();
+  if (delayTime > 0){
   vTaskSuspend(task2); 
   vTaskDelay(delayTime / portTICK_PERIOD_MS);
   vTaskResume(task2);
+  } else{
+    delayTime = 300;
+    }
+ 
   Serial.print("Updated LED delay to: ");
-  Serial.println(delayTime); 
+  Serial.println(delayTime);
 }

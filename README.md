@@ -1,2 +1,2 @@
 # esplore
-Exploring adavanced esp features
+Exploring advanced esp features

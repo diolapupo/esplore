@@ -13,6 +13,24 @@ void testTask(void *parameter){
       b[i] = a + 1;
       }
       Serial.println(b[0]);
+      //printing the remaining stack memory
+      Serial.print("High water mark(): ");
+      Serial.println(uxTaskGetStackHighWaterMark(NULL));
+      Serial.print("Heap before malloc (bytes): ");
+      Serial.println(xPortGetFreeHeapSize());
+
+      int *ptr = (int*) pvPortMalloc(1024 * sizeof(int));
+
+      if ( ptr == NULL){
+        Serial.println("Not enough heap.");
+        }else{
+      for (int i = 0; i < 1024; i++){
+        ptr[i] = 3;
+        }}
+      Serial.print("Heap after malloc (bytes): ");
+      Serial.println(xPortGetFreeHeapSize());
+      vPortFree(ptr);
+      vTaskDelay(100 / portTICK_PERIOD_MS);
     }
   }
 void setup() {
@@ -22,7 +40,7 @@ void setup() {
   Serial.println();
   Serial.println("--FreeRTOS Memory Demo ---");
 
-  xTaskCreatePinnedToCore(testTask, "Test Task", 1024, NULL, 1, NULL, app_cpu);
+  xTaskCreatePinnedToCore(testTask, "Test Task", 1500, NULL, 1, NULL, app_cpu);
   vTaskDelete(NULL);
 }
 

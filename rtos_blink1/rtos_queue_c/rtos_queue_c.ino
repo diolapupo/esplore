@@ -30,18 +30,28 @@ void taskA(void *parameters){
       }
      if(Serial.available() > 0){
       c = Serial.read();
-      if
-      }
-     if(serialInput.substring(0,5) == "delay"){
-      serialInput = serialInput.substring(7);
-      ledDelay = serialInput.toInt();
-         if(xQueueSend(queue1, (void *) &ledDelay, 10) != pdTRUE){
-            Serial.println("Queue full");
-        }else{ Serial.println("Delay sent");}
-      }else{
-        Serial.println(serialInput);
+      if(bufpos < buf_len-1){
+        buf[bufpos] = c;
+        bufpos++;
         }
 
+        if((c == '\n') || (c == '\r')){
+          Serial.print("\r\n");
+          if(memcmp(buf, command, cmd_len) == 0){
+              char* tail = buf + cmd_len;
+              ledDelay = atoi(tail);
+              ledDelay = abs(ledDelay);
+
+              if(xQueueSend(queue1, (void *) &ledDelay, 10) != pdTRUE){
+            Serial.println("Queue full");
+              }else{ Serial.println("Delay sent");}
+            }
+            memset(buf, 0, buf_len);
+            bufpos = 0;
+          }else{
+            Serial.print(c);
+            }
+      }
     }
   }
 

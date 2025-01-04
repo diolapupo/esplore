@@ -11,16 +11,26 @@ static QueueHandle_t queue2;
 static TaskHandle_t taska = NULL;
 static TaskHandle_t taskb = NULL;
 static int t = 0;
+static const uint8_t buf_len = 255;
+static const char command[] = "delay ";
+
 
 void taskA(void *parameters){
  String blinkChecker, serialInput;
+ char c;
+ char buf[bef_len];
+ uint8_t bufpos = 0;
+ uint8_t cmd_len = strlen(command);
  int ledDelay; 
+
+ memset(buf, 0,buf_len);
   while(1){
     if(xQueueReceive(queue2, (void *) &blinkChecker, 0) == pdTRUE){
       Serial.println(blinkChecker);
       }
      if(Serial.available() > 0){
-      String serialInput = Serial.readString();
+      c = Serial.read();
+      if
       }
      if(serialInput.substring(0,5) == "delay"){
       serialInput = serialInput.substring(7);
@@ -31,7 +41,7 @@ void taskA(void *parameters){
       }else{
         Serial.println(serialInput);
         }
-    vTaskDelay(1000/portTICK_PERIOD_MS);
+
     }
   }
 
